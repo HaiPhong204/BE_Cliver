@@ -18,5 +18,6 @@ namespace CliverApi.DTOs
         [IntRange(min:1, max:5, ErrorMessage ="Rating must be between 1 and 5")]
         public int Rating { get; set; }
         public string Comment { get; set; }
+        public int? Label { get; set; }
     }
 }
