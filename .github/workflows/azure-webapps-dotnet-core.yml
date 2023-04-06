@@ -1,4 +1,3 @@
-
 name: Build and deploy ASP.Net Core app to an Azure Web App
 
 env:
@@ -20,6 +19,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Clear cache
+        run: |
+          rm -rf ${{ github.workspace }}/.github
+          rm -rf ${{ github.workspace }}/node_modules
+
+      - name: Clear workflow directory
+        run: |
+          rm -rf ${{ github.workspace }}/*
+          git clone https://github.com/<your-username>/<your-repository>.git ${{ github.workspace }}
+
       - uses: actions/checkout@v2
 
       - name: Set up .NET Core
