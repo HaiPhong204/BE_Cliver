@@ -27,7 +27,7 @@ jobs:
       - name: Clear workflow directory
         run: |
           rm -rf ${{ github.workspace }}/*
-          git clone https://github.com/<your-username>/<your-repository>.git ${{ github.workspace }}
+          git clone https://github.com/HaiPhong204/BE_Cliver.git ${{ github.workspace }}
 
       - uses: actions/checkout@v2
 
