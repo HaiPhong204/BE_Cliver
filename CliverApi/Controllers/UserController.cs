@@ -2,6 +2,7 @@ using AutoMapper;
 using CliverApi.Attributes;
 using CliverApi.Core.Contracts;
 using CliverApi.DTOs;
+using CliverApi.DTOs.Order;
 using CliverApi.DTOs.RequestFeatures;
 using CliverApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -77,6 +78,16 @@ namespace CliverApi.Controllers
             var reviewStats = await _unitOfWork.Reviews.GetReviewsStatsOfUser(id);
 
             return Ok(new ApiResponse<IEnumerable<RatingStat>>(reviewStats, "Get Reviews  statistic succesfully"));
+        }
+
+        [HttpGet]
+        [Route("{id}/reviews/sentiments")]
+        [Produces(typeof(ApiResponse<IEnumerable<ReviewSentimentDto>>))]
+        public async Task<IActionResult> GetReviewsSentiment(string id)
+        {
+            var reviewSentiments = await _unitOfWork.Reviews.GetReviewsSentiment(id);
+            var reviewSentimentsDto = _mapper.Map<IEnumerable<ReviewSentimentDto>>(reviewSentiments);
+            return Ok(new ApiResponse<IEnumerable<ReviewSentimentDto>>(reviewSentimentsDto, "Get Reviews  statistic succesfully"));
         }
     }
 }

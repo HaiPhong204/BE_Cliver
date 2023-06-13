@@ -86,6 +86,7 @@ public class MapperProfile : Profile
         //Review
         CreateMap<Review, ReviewDto>();
         CreateMap<CreateReviewDto, Review>();
+        CreateMap<Review, ReviewSentimentDto>();
    
     }
 }

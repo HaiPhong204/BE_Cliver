@@ -1,4 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:44337",
+      "sslPort": 0
+    }
+  },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -13,27 +22,28 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true,
-      "useSSL": true
+      "environmentVariables": {},
+      "useSSL": true,
+      "publishAllPorts": true
     },
     "CliverApi-Staging": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7113",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "applicationUrl": "https://localhost:7113",
       "dotnetRunMessages": true
     },
     "CliverApi-Dev": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7113",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7113",
       "dotnetRunMessages": true
     },
     "WSL": {
@@ -45,15 +55,6 @@
         "ASPNETCORE_URLS": "https://localhost:7113;http://localhost:5113"
       },
       "distributionName": ""
-    }
-  },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:44337",
-      "sslPort": 0
     }
   }
 }

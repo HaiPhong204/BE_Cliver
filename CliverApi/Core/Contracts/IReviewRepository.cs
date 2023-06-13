@@ -11,5 +11,6 @@ namespace CliverApi.Core.Contracts
         Task<IEnumerable<Review>> GetReviewsOfPost(int postId);
         Task<List<RatingStat>> GetReviewsStats(int postId);
         Task<List<RatingStat>> GetReviewsStatsOfUser(string userId);
+        Task<List<Review>> GetReviewsSentiment(string userId);
     }
 }

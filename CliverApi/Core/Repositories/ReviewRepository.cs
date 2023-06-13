@@ -135,5 +135,11 @@ namespace CliverApi.Core.Repositories
 
             return ratings;
         }
+
+        public async Task<List<Review>> GetReviewsSentiment(string userId)
+        {
+            var reviewSentiments = await _context.Reviews.Where(u => u.UserId == userId).ToListAsync();
+            return reviewSentiments;
+        }
     }
 }

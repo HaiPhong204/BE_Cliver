@@ -11,6 +11,8 @@
     <DockerComposeProjectPath>../docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'CliverApi-Staging' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'CliverApi-Dev' " />
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.32" />
