@@ -140,6 +140,7 @@ namespace CliverApi.Core.Repositories
         {
             var reviewSentiments = await _context.Reviews
             .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.SellerId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.BuyerId == userId)).AsNoTracking()
+            .Include(r => r.User)
             .OrderByDescending(r => r.CreatedAt).ToListAsync();
             return reviewSentiments;
         }
