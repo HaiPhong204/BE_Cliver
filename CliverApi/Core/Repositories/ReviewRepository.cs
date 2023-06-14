@@ -138,7 +138,9 @@ namespace CliverApi.Core.Repositories
 
         public async Task<List<Review>> GetReviewsSentiment(string userId)
         {
-            var reviewSentiments = await _context.Reviews.Where(u => u.UserId == userId).ToListAsync();
+            var reviewSentiments = await _context.Reviews
+            .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.SellerId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.BuyerId == userId)).AsNoTracking()
+            .OrderByDescending(r => r.CreatedAt).ToListAsync();
             return reviewSentiments;
         }
     }
