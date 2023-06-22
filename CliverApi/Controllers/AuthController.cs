@@ -76,7 +76,8 @@ namespace CliverApi.Controllers
                 TokenAccountMap.Remove(user.Email);
             }
             TokenAccountMap.Add(user.Email, code);
-            _= _mailService.SendRegisterMail(new UserDto { Email = user.Email }, code.Value);
+            await _mailService.SendRegisterMail(new UserDto { Email = user.Email }, code.Value);
+
             return Ok(new
             {
                 message = "Send email verification successfully"
