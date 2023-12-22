@@ -20,7 +20,7 @@ namespace CliverApi.Models
         public int PostId { get; set; }
         public Post? Post { get; set; }
         public int? NumberOfRevisions { get; set; }
-        public int Price { get; set; }
+        public int? Price { get; set; }
         public bool IsAvailable { get; set; }
         public PackageStatus Status { get; set; }
         [Column(TypeName = "varchar(12)")]

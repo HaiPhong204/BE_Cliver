@@ -9,7 +9,6 @@ namespace CliverApi.DTOs
         }
         public string? Title { get; set; }
         public string? Description { get; set; }
-        public int? SubcategoryId { get; set; }
 
         private List<string>? _tags { get; set; }
         public List<string>? Tags

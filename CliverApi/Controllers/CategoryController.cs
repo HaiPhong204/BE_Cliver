@@ -19,25 +19,12 @@ namespace CliverApi.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("Category")]
+        public async Task<IActionResult> GetPopularCategories()
         {
-            var categories = await _unitOfWork.Categories.Find(includeProperties: "Subcategories").ToListAsync();
-            return Ok(new
-            {
-                data = categories,
-            });
+            var categories = await _unitOfWork.Categories.GetPopularCategory();
+            return Ok(new ApiResponse<IEnumerable<Category>>(categories, "Get successfully"));
         }
-
-        // GET: api/<CategoryController>
-        [HttpGet]
-        [Route("popular")]
-        public async Task<IActionResult> GetPopularSubCategories()
-        {
-            var categories = await _unitOfWork.Categories.GetPopularSubcategories();
-            return Ok(new ApiResponse<IEnumerable<Subcategory>>(categories, "Get successfully", new DTOs.RequestFeatures.MetaData { Count = 10 }));
-        }
-
     }
 }

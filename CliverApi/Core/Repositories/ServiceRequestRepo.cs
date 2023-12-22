@@ -20,7 +20,6 @@ namespace CliverApi.Core.Repositories
         public async Task<IEnumerable<ServiceRequest>> GetServiceRequests(string userId, Mode mode)
         {
             var serviceReqsQuery = _context.ServiceRequests.AsNoTracking().Include(sr => sr.Category)
-            .Include(sr => sr.Subcategory)
             .Include(Sr => Sr.User);
             if (mode == Mode.Buyer)
             {
@@ -49,7 +48,6 @@ namespace CliverApi.Core.Repositories
         {
             var serReqest = await _context.ServiceRequests.Where(sR => sR.Id == id && sR.UserId == userId)
             .Include(sr => sr.Category)
-            .Include(sr => sr.Subcategory)
             .Include(Sr => Sr.User)
             .FirstOrDefaultAsync();
 
@@ -62,13 +60,10 @@ namespace CliverApi.Core.Repositories
         }
         public async Task<ServiceRequest> CreateServiceRequest(string userId, CreateServiceRequestDto createDto)
         {
-            if (createDto.SubcategoryId.HasValue)
+            var isValidSub = _context.Categories.Where(s => s.Id == createDto.CategoryId).Any();
+            if (!isValidSub)
             {
-                var isValidSub = _context.Subcategories.Where(s => s.Id == createDto.SubcategoryId && s.CategoryId == createDto.CategoryId).Any();
-                if (!isValidSub)
-                {
-                    throw new ApiException("Invalid Subcategory", 400);
-                }
+                throw new ApiException("Invalid Category", 400);
             }
             var req = _mapper.Map<ServiceRequest>(createDto);
 
@@ -87,23 +82,6 @@ namespace CliverApi.Core.Repositories
             if (serReqest == null)
             {
                 throw new ApiException("Service request not found!", 404);
-            }
-
-            if (updateDto.SubcategoryId.HasValue)
-            {
-                bool isValidSub = true;
-                if (updateDto.CategoryId != serReqest.CategoryId)
-                {
-                    isValidSub = await _context.Subcategories.AsNoTracking().Where(s => s.Id == updateDto.SubcategoryId && s.CategoryId == updateDto.CategoryId).AnyAsync();
-                }
-                else
-                {
-                    isValidSub = await _context.Subcategories.AsNoTracking().Where(s => s.Id == updateDto.SubcategoryId && s.CategoryId == serReqest.CategoryId).AnyAsync();
-                }
-                if (!isValidSub)
-                {
-                    throw new ApiException("Invalid Subcategory", 400);
-                }
             }
 
             _mapper.Map(updateDto, serReqest);

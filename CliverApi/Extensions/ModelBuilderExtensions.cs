@@ -231,14 +231,6 @@ Image Editing".Split("\n"),
                 }
             };
 
-            var listSubcategories = new List<Subcategory>();
-            foreach (var item in subcategories)
-            {
-                var kq = item.values.Select((v, index) => new Subcategory { Id = index + 1 + listSubcategories.Count(), Name = v.Replace("\r", "").Trim(), CategoryId = item.categoryId });
-                modelBuilder.Entity<Subcategory>().HasData(kq);
-                listSubcategories = listSubcategories.Concat(kq).ToList();
-
-            }
             modelBuilder.Entity<Wallet>().HasData(
                     new Wallet()
                     {

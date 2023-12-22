@@ -22,8 +22,6 @@ namespace CliverApi.Models
         public User? User { get; set; }
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
-        public int? SubcategoryId { get; set; }
-        public Subcategory? Subcategory { get; set; }
         public string Tags { get; set; }
         public long? Budget { get; set; }
         public DateTime? Deadline { get; set; }

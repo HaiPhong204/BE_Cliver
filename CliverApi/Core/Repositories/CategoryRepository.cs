@@ -12,9 +12,9 @@ namespace CliverApi.Core.Repositories
 
         }
 
-        public async Task<IEnumerable<Subcategory>> GetPopularSubcategories()
+        public async Task<IEnumerable<Category>> GetPopularCategory()
         {
-            return await _context.Subcategories.AsNoTracking().OrderByDescending(sC => sC.Posts.Count()).Take(10).ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
     }
 }

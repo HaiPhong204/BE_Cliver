@@ -51,7 +51,8 @@ namespace CliverApi.Controllers
             analytics.CompletedOrders = userOrders.Where(o => o.Status == OrderStatus.Completed).Count();
             analytics.ActiveOrders = userOrders.Where(o => o.Status != OrderStatus.Completed).Count();
             analytics.AvailableForWithdrawal = wallet?.AvailableForWithdrawal ?? 0;
-            analytics.AvgSellingPrice = (await _context.Packages.Where(p => p.Post!.UserId == userId).Select(p => p.Price).ToListAsync()).DefaultIfEmpty(0).Average(p => p);
+            analytics.AvgSellingPrice = (await _context.Packages.Where(p => p.Post!.UserId == userId)
+            .Select(p => p.Price).ToListAsync()).DefaultIfEmpty(0).Average(p => p ?? 0);
 
             return Ok(new ApiResponse<object>(analytics, "Get EarningAnalytics details"));
         }

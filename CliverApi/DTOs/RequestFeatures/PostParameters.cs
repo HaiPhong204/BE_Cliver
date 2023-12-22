@@ -12,6 +12,5 @@ namespace CliverApi.DTOs.RequestFeatures
         public PostStatus? Status{ get; set; }
         public PostFilter? Filter { get; set; }
         public int? CategoryId{ get; set; }
-        public int? SubCategoryId{ get; set; }
     }
 }

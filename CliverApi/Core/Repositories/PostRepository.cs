@@ -37,17 +37,13 @@ namespace CliverApi.Core.Repositories
                 }
 
                 postsQuery = postsQuery.Where(p => p.Title.Contains(textSearch)
-                || p.Description.Contains(textSearch)
-                || p.Packages.Any(p => p.Name.Contains(textSearch)) || p.Subcategory!.Name.Contains(textSearch));
+                || p.Description.Contains(textSearch) || p.Requirement.Contains(textSearch)
+                || p.Packages.Any(p => p.Name.Contains(textSearch)) || p.Category!.Name.Contains(textSearch));
             }
 
-            if (postParameters.SubCategoryId.HasValue)
+            if (postParameters.CategoryId.HasValue)
             {
-                postsQuery = postsQuery.Where(p => p.SubcategoryId == postParameters.SubCategoryId);
-            }
-            else if (postParameters.CategoryId.HasValue)
-            {
-                postsQuery = postsQuery.Where(p => p.Subcategory!.CategoryId == postParameters.CategoryId);
+                postsQuery = postsQuery.Where(p => p.CategoryId == postParameters.CategoryId);
             }
 
             if (postParameters.Filter.HasValue)

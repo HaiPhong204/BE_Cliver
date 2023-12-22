@@ -28,7 +28,6 @@ namespace CliverApi.Models
         public DbSet<User> Users => Set<User>();
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Category> Categories => Set<Category>();
-        public DbSet<Subcategory> Subcategories => Set<Subcategory>();
         public DbSet<Package> Packages => Set<Package>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderHistory> OrderHistories => Set<OrderHistory>();

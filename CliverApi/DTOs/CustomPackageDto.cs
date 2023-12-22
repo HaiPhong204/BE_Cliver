@@ -16,7 +16,7 @@ namespace CliverApi.DTOs
         public bool IsAvailable { get; set; }
         public int DeliveryDays { get; set; }
         public int? NumberOfRevisions { get; set; }
-        public int Price { get; set; }
+        public int? Price { get; set; }
         public PackageStatus Status { get; set; }
         public PackageType Type { get; set; }
         public int? ExpirationDays { get; set; }

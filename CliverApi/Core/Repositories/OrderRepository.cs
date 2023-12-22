@@ -126,8 +126,8 @@ namespace CliverApi.Core.Repositories
                 order.DueBy = DateTime.UtcNow.Date.AddDays(package.DeliveryDays);
                 order.RevisionTimes = package.NumberOfRevisions ?? 0;
                 order.LeftRevisionTimes = package.NumberOfRevisions ?? 0;
-                order.Price = package.Price;
-                order.LockedMoney = package.Price;
+                order.Price = package.Price ?? 0;
+                order.LockedMoney = package.Price ?? 0;
                 order.PaymentMethod = method;
                 order.SellerId = package.Post!.UserId;
 

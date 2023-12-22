@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using CliverApi.Core.Contracts;
 using CliverApi.DTOs;
-using CliverApi.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Text.Json;
 
 namespace CliverApi.Hubs
