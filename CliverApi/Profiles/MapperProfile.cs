@@ -13,12 +13,10 @@ public class MapperProfile : Profile
         CreateMap<int?, int>().ConvertUsing((src, dest) => src ?? dest);
 
         CreateMap<User, UserDto>()
-        .ForMember(u => u.Languages, opt => opt.MapFrom(uSrc => JsonConvert.DeserializeObject<List<Language>>(uSrc.Languages)))
-        .ForMember(u => u.Skills, opt => opt.MapFrom(uSrc => JsonConvert.DeserializeObject<List<string>>(uSrc.Skills)));
+        .ForMember(u => u.Languages, opt => opt.MapFrom(uSrc => JsonConvert.DeserializeObject<List<Language>>(uSrc.Languages)));
 
         CreateMap<UpdateUserDto, User>()
         .ForMember(u => u.Languages, opt => opt.MapFrom((uSrc, des) => uSrc.Languages != null  ? JsonConvert.SerializeObject(uSrc.Languages) : des.Languages))
-        .ForMember(u => u.Skills, opt => opt.MapFrom((uSrc, des) => uSrc.Skills != null ?  JsonConvert.SerializeObject(uSrc.Skills) : des.Skills))
         .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<UserDto, User>();

@@ -15,6 +15,6 @@ namespace CliverApi.DTOs
         public string? Description { get; set; }
         public string? Avatar { get; set; }
         public List<Language>? Languages{ get; set; }
-        public List<string>? Skills{ get; set; }
+        public string? Skills{ get; set; }
     }
 }

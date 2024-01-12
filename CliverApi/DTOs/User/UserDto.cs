@@ -10,7 +10,6 @@ namespace CliverApi.DTOs
         {
             Posts = new List<PostDto>();
             Languages = new List<Language>();
-            Skills = new List<string>();
         }
 
         public string Id { get; set; } = string.Empty;
@@ -27,7 +26,7 @@ namespace CliverApi.DTOs
         public int RatingCount { get; set; }
         public string? Avatar { get; set; }
         public List<Language> Languages { get; set; }
-        public List<string> Skills { get; set; }
+        public string Skills { get; set; }
         public ICollection<PostDto> Posts { get; set; }
     }
 }
