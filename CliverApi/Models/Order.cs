@@ -11,8 +11,8 @@ namespace CliverApi.Models
         public Order()
         {
             Note = "";
-            BuyerId = null!;
-            SellerId = null!;
+            RecruiterId = null!;
+            CandidateId = null!;
             Histories = new List<OrderHistory>();
             Reviews = new List<Review>();
         }
@@ -21,13 +21,13 @@ namespace CliverApi.Models
         public string Note { get; set; }
         public DateTime DueBy { get; set; }
         [Column(TypeName = "varchar(36)")]
-        public string BuyerId { get; set; }
-        public User? Buyer { get; set; }
+        public string RecruiterId { get; set; }
+        public User? Recruiter { get; set; }
         public int RevisionTimes { get; set; }
         public int LeftRevisionTimes { get; set; }
         public long LockedMoney { get; set; }
-        public string SellerId { get; set; }
-        public User? Seller { get; set; }
+        public string CandidateId { get; set; }
+        public User? Candidate { get; set; }
         public int PackageId { get; set; }
         public Package? Package { get; set; }
         public OrderStatus? Status { get; set; }
@@ -41,7 +41,7 @@ namespace CliverApi.Models
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.HasOne(b => b.Package).WithMany(p => p.Orders).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(b => b.Buyer).WithMany(p => p.Orders).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(b => b.Recruiter).WithMany(p => p.Orders).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

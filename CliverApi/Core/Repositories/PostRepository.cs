@@ -5,6 +5,7 @@ using CliverApi.DTOs.RequestFeatures;
 using CliverApi.Error;
 using CliverApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using System.Reflection;
 using static CliverApi.Common.Enum;
 
@@ -17,6 +18,16 @@ namespace CliverApi.Core.Repositories
         : base(context, logger, mapper)
         {
             _recentPostRepository = recentPostRepository;
+        }
+
+        public async Task<List<Post>> Test()
+        {
+            List<int> ids = new() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+            var post = await _context.Posts
+                .Where(p => ids.Contains(p.Id))
+                .Include(e => e.User)
+                .Include(p => p.Packages.OrderBy(p => p.Price)).AsQueryable().ToListAsync();
+            return post;
         }
 
         public async Task<PagedList<Post>> GetPosts(PostParameters postParameters, string? userId = null, bool trackChanges = false)

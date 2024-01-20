@@ -84,7 +84,7 @@ namespace CliverApi.Controllers
         {
             var user = HttpContext.Items["User"] as User;
             var newOrder = _mapper.Map<Order>(orderDto);
-            newOrder.BuyerId = user!.Id;
+            newOrder.RecruiterId = user!.Id;
             await _unitOfWork.Orders.InsertOrder(newOrder, PaymentMethod.MyWallet);
 
             return CreatedAtAction(nameof(GetById), new { id = newOrder.Id }, newOrder);
@@ -109,7 +109,7 @@ namespace CliverApi.Controllers
             var user = HttpContext.Items["User"] as User;
             var order = await _unitOfWork.Orders.FindById(orderId, false);
 
-            if (order == null || user!.Id != order?.BuyerId)
+            if (order == null || user!.Id != order?.CandidateId)
             {
                 throw new ApiException("Đơn hàng không hợp lệ", 400);
             }

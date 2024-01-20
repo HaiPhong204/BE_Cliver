@@ -18,7 +18,7 @@ namespace CliverApi.Core.Repositories
         public async Task<IEnumerable<Review>> GetReviewsOfUser(string userId)
         {
             var reviews = await _context.Reviews
-            .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.SellerId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.BuyerId == userId)).AsNoTracking()
+            .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.CandidateId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.RecruiterId == userId)).AsNoTracking()
             .Include(r => r.User)
             .OrderByDescending(r => r.CreatedAt).ToListAsync();
             return reviews;
@@ -35,7 +35,7 @@ namespace CliverApi.Core.Repositories
             Review review;
             if (mode == Mode.Buyer)
             {
-                if (order.BuyerId != userId)
+                if (order.RecruiterId != userId)
                 {
                     throw new ApiException("You are not authorized to review this order", 401);
                 }
@@ -55,15 +55,15 @@ namespace CliverApi.Core.Repositories
                 post.RatingCount++;
                 post.RatingAvg = (sumRatings + review.Rating) * 1.0 / post.RatingCount;
 
-                var sellerId = order.SellerId!;
-                var seller = await _context.Users.Where(p => p.Id == sellerId).FirstOrDefaultAsync();
-                sumRatings = seller!.RatingAvg * seller.RatingCount;
-                seller.RatingCount++;
-                seller.RatingAvg = (sumRatings + review.Rating) * 1.0 / seller.RatingCount;
+                var CandidateId = order.CandidateId!;
+                var Candidate = await _context.Users.Where(p => p.Id == CandidateId).FirstOrDefaultAsync();
+                sumRatings = Candidate!.RatingAvg * Candidate.RatingCount;
+                Candidate.RatingCount++;
+                Candidate.RatingAvg = (sumRatings + review.Rating) * 1.0 / Candidate.RatingCount;
             }
             else
             {
-                if (order.SellerId != userId)
+                if (order.CandidateId != userId)
                 {
                     throw new ApiException("You are not authorized to review this order", 401);
                 }
@@ -81,11 +81,11 @@ namespace CliverApi.Core.Repositories
                 review.Type = ReviewType.FromSeller;
                 review.OrderId = orderId;
 
-                var buyerId = order.BuyerId!;
-                var buyer = await _context.Users.Where(p => p.Id == buyerId).FirstOrDefaultAsync();
-                var sumRatings = buyer!.RatingAvg * buyer.RatingCount;
-                buyer.RatingCount++;
-                buyer.RatingAvg = (sumRatings + review.Rating) * 1.0 / buyer.RatingCount;
+                var RecruiterId = order.RecruiterId!;
+                var Recruiter = await _context.Users.Where(p => p.Id == RecruiterId).FirstOrDefaultAsync();
+                var sumRatings = Recruiter!.RatingAvg * Recruiter.RatingCount;
+                Recruiter.RatingCount++;
+                Recruiter.RatingAvg = (sumRatings + review.Rating) * 1.0 / Recruiter.RatingCount;
             }
 
 
@@ -124,7 +124,7 @@ namespace CliverApi.Core.Repositories
         async Task<List<RatingStat>> IReviewRepository.GetReviewsStatsOfUser(string userId)
         {
             var ratings = new int[5].Select((r, i) => new RatingStat { Rating = i + 1, Count = 0 }).ToList();
-            var ratingStats = await _context.Reviews.Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.SellerId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.BuyerId == userId)).GroupBy(r => r.Rating)
+            var ratingStats = await _context.Reviews.Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.CandidateId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.RecruiterId == userId)).GroupBy(r => r.Rating)
              .OrderBy(gr => gr.Key).Select(gr => new { Rating = gr.Key, Count = gr.Count() }).ToListAsync();
 
             for (int i = 0; i < ratingStats.Count; i++)
@@ -139,7 +139,7 @@ namespace CliverApi.Core.Repositories
         public async Task<List<Review>> GetReviewsSentiment(string userId)
         {
             var reviewSentiments = await _context.Reviews
-            .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.SellerId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.BuyerId == userId)).AsNoTracking()
+            .Where(r => (r.Type == ReviewType.FromBuyer && r.Order!.CandidateId == userId) || (r.Type == ReviewType.FromSeller && r.Order!.RecruiterId == userId)).AsNoTracking()
             .Include(r => r.User)
             .OrderByDescending(r => r.CreatedAt).ToListAsync();
             return reviewSentiments;

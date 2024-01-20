@@ -41,7 +41,7 @@ namespace CliverApi.Controllers
 
             var user = HttpContext.Items["User"] as User;
             var newOrder = _mapper.Map<Order>(createOrderDto);
-            newOrder.BuyerId = user!.Id;
+            newOrder.CandidateId = user!.Id;
             await _unitOfWork.Orders.InsertOrder(newOrder, Common.Enum.PaymentMethod.VnPay);
 
 

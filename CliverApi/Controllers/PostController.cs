@@ -27,6 +27,15 @@ namespace CliverApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("test")]
+        public async Task<IActionResult> Get()
+        {
+            var posts = await _unitOfWork.Posts.Test();
+
+            var postDtos = _mapper.Map<IEnumerable<Post>, IEnumerable<PostDto>>(posts);
+            return Ok(new ApiResponse<IEnumerable<PostDto>>(postDtos, "Get posts successfully"));
+        }
+
         [HttpGet]
         [Produces(typeof(ApiResponse<IEnumerable<PostDto>>))]
         public async Task<IActionResult> Get([FromQuery] PostParameters postParam)

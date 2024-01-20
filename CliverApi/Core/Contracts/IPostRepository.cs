@@ -14,5 +14,6 @@ namespace CliverApi.Core.Contracts
         Task Update(int id, UpdatePostDto post);
         Task DeletePost(int id, string userId);
         Task UpdateStatus(int id, string userId, PostStatus status);
+        Task<List<Post>> Test();
     }
 }
