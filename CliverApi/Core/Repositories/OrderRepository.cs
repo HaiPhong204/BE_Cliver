@@ -24,11 +24,11 @@ namespace CliverApi.Core.Repositories
             var query = this.Find(trackChanges: false).IgnoreQueryFilters();
             if (mode == Mode.Buyer)
             {
-                query = query.Where(o => o.RecruiterId == userId).Include(o => o.Recruiter);
+                query = query.Where(o => o.CandidateId == userId).Include(o => o.Candidate);
             }
             else
             {
-                query = query.Where(o => o.CandidateId == userId && o.Status != OrderStatus.PendingPayment).Include(o => o.Candidate);
+                query = query.Where(o => o.RecruiterId == userId && o.Status != OrderStatus.PendingPayment).Include(o => o.Recruiter);
             }
 
             if (status.HasValue)
@@ -53,7 +53,7 @@ namespace CliverApi.Core.Repositories
 
             var order = await this.Find(o => o.PackageId == packId)
             .IgnoreQueryFilters()
-            .Include(o => o.Candidate)
+            .Include(o => o.Recruiter)
             .Include(o => o.Candidate)
             .Include(o => o.Package).ThenInclude(p => p.Post)
             .Include(o => o.Histories!).ThenInclude(h => h.Resource)
@@ -66,7 +66,7 @@ namespace CliverApi.Core.Repositories
         {
             var order = await this.Find(o => o.Id == Id)
             .IgnoreQueryFilters()
-            .Include(o => o.Candidate)
+            .Include(o => o.Recruiter)
             .Include(o => o.Candidate)
             .Include(o => o.Package).ThenInclude(p => p.Post)
             .Include(o => o.Histories!).ThenInclude(h => h.Resource)
@@ -100,7 +100,7 @@ namespace CliverApi.Core.Repositories
                 OrderId = orderId,
             });
         }
-        public async Task InsertOrder(Order order, PaymentMethod method)
+        public async Task InsertOrder(Order order)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -113,7 +113,7 @@ namespace CliverApi.Core.Repositories
                 {
                     throw new ApiException(statusCode: 404, message: "Package you ordering does not exist");
                 }
-                if (order.RecruiterId == package.Post!.UserId)
+                if (order.CandidateId == package.Post!.UserId)
                 {
                     throw new ApiException(statusCode: 400, message: "You cannot buy your service!");
                 }
@@ -128,26 +128,17 @@ namespace CliverApi.Core.Repositories
                 order.LeftRevisionTimes = package.NumberOfRevisions ?? 0;
                 order.Price = package.Price ?? 0;
                 order.LockedMoney = package.Price ?? 0;
-                order.PaymentMethod = method;
-                order.CandidateId = package.Post!.UserId;
+                order.RecruiterId = package.Post!.UserId;
 
-                if (method == PaymentMethod.MyWallet)
-                {
-                    order.Status = OrderStatus.Created;
-                }
-                else
-                {
-                    order.Status = OrderStatus.PendingPayment;
-                }
-
-
+                order.Status = OrderStatus.Created;
+                order.PaymentMethod = null;
 
                 await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
-                if (method == PaymentMethod.MyWallet)
-                {
-                    await UpdateUserMoney(order.RecruiterId, order.Price, order.Id);
-                }
+                //if (method == PaymentMethod.MyWallet)
+                //{
+                //    await UpdateUserMoney(order.CandidateId, order.Price, order.Id);
+                //}
                 await CreateOrderHistory(new OrderHistory { Status = order.Status ?? OrderStatus.Created, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
 
                 await _context.SaveChangesAsync();
@@ -165,7 +156,7 @@ namespace CliverApi.Core.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var order = await _context.Orders.Where(o => o.Id == orderId).Include(o => o.Recruiter).FirstOrDefaultAsync();
+                var order = await _context.Orders.Where(o => o.Id == orderId).Include(o => o.Candidate).FirstOrDefaultAsync();
 
                 if (order == null || order.Status != OrderStatus.PendingPayment)
                 {
@@ -176,12 +167,12 @@ namespace CliverApi.Core.Repositories
                     Amount = order.Price,
                     Description = "Successful payment",
                     Type = Common.Enum.TransactionType.Payment,
-                    WalletId = order.Recruiter!.WalletId,
+                    WalletId = order.Candidate!.WalletId,
                     OrderId = orderId,
                 });
 
-                order.Status = OrderStatus.Created;
-                await CreateOrderHistory(new OrderHistory { Status = OrderStatus.Created, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
+                order.Status = OrderStatus.Completed;
+                await CreateOrderHistory(new OrderHistory { Status = OrderStatus.Completed, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -206,7 +197,7 @@ namespace CliverApi.Core.Repositories
                 }
                 if (mode == Mode.Buyer)
                 {
-                    if (order.RecruiterId != userId)
+                    if (order.CandidateId != userId)
                     {
                         throw new ApiException("You are not authorized to do this action!", 400);
                     }
@@ -218,7 +209,7 @@ namespace CliverApi.Core.Repositories
                 }
                 else
                 {
-                    if (order.CandidateId != userId)
+                    if (order.RecruiterId != userId)
                     {
                         throw new ApiException("You are not authorized to do this action!", 400);
                     }
@@ -231,7 +222,7 @@ namespace CliverApi.Core.Repositories
                     }
                 }
 
-                var wallet = await _context.Wallets.Where(w => w.User!.Id == order.RecruiterId).FirstOrDefaultAsync();
+                var wallet = await _context.Wallets.Where(w => w.User!.Id == order.CandidateId).FirstOrDefaultAsync();
 
                 if (order.Status != OrderStatus.PendingPayment)
                 {
@@ -268,7 +259,7 @@ namespace CliverApi.Core.Repositories
                 throw new ApiException("Order is invalid!", 400);
             }
 
-            if (order.CandidateId != userId)
+            if (order.RecruiterId != userId)
             {
                 throw new ApiException("You are not authorized to do this action!", 400);
             }
@@ -293,7 +284,7 @@ namespace CliverApi.Core.Repositories
                     throw new ApiException("Order is invalid!", 400);
                 }
 
-                if (order.CandidateId != userId)
+                if (order.RecruiterId != userId)
                 {
                     throw new ApiException("You are not authorized to do this action!", 400);
                 }
@@ -332,7 +323,7 @@ namespace CliverApi.Core.Repositories
                 throw new ApiException("Order is invalid!", 400);
             }
 
-            if (order.RecruiterId != userId)
+            if (order.CandidateId != userId)
             {
                 throw new ApiException("You are not authorized to do this action!", 400);
             }
@@ -341,12 +332,12 @@ namespace CliverApi.Core.Repositories
             {
                 throw new ApiException("Order, being currently in this status, cannot be cancelled!", 400);
             }
-            var wallet = await _context.Wallets.Where(w => w.User.Id == order.CandidateId).FirstOrDefaultAsync();
+            var wallet = await _context.Wallets.Where(w => w.User.Id == order.RecruiterId).FirstOrDefaultAsync();
 
             wallet!.AvailableForWithdrawal += order.Price;
             wallet.Balance += order.Price;
-            order.Status = OrderStatus.Completed;
-            await CreateOrderHistory(new OrderHistory { Status = OrderStatus.Completed, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
+            order.Status = OrderStatus.PendingPayment;
+            await CreateOrderHistory(new OrderHistory { Status = OrderStatus.PendingPayment, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
             await _context.SaveChangesAsync();
         }
         public async Task ReviseOrder(int orderId, string userId)
@@ -357,7 +348,7 @@ namespace CliverApi.Core.Repositories
                 throw new ApiException("Order is invalid!", 400);
             }
 
-            if (order.RecruiterId != userId)
+            if (order.CandidateId != userId)
             {
                 throw new ApiException("You are not authorized to do this action!", 400);
             }
@@ -381,7 +372,7 @@ namespace CliverApi.Core.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var order = await _context.Orders.Where(o => o.Id == orderId && o.RecruiterId == userId).FirstOrDefaultAsync();
+                var order = await _context.Orders.Where(o => o.Id == orderId && o.CandidateId == userId).FirstOrDefaultAsync();
                 if (order == null)
                 {
                     throw new ApiException("Order not found", 404);
@@ -390,10 +381,10 @@ namespace CliverApi.Core.Repositories
                 {
                     throw new ApiException("Order was already paid", 400);
                 }
-                order.Status = OrderStatus.Created;
+                order.Status = OrderStatus.Completed;
                 order.PaymentMethod = PaymentMethod.MyWallet;
-                await UpdateUserMoney(order.RecruiterId, order.Price, order.Id);
-                await CreateOrderHistory(new OrderHistory { Status = OrderStatus.Created, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
+                await UpdateUserMoney(order.CandidateId, order.Price, order.Id);
+                await CreateOrderHistory(new OrderHistory { Status = OrderStatus.Completed, CreatedAt = DateTime.UtcNow, OrderId = order.Id });
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

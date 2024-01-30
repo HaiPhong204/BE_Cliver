@@ -40,7 +40,7 @@ namespace CliverApi.Controllers
             var userId = HttpContext.Items["UserId"] as string;
             var analytics = new EarningAnalytics();
 
-            var userOrders = await _context.Orders.Where(o => o.CandidateId == userId).ToListAsync();
+            var userOrders = await _context.Orders.Where(o => o.RecruiterId == userId).ToListAsync();
             var wallet = await _context.Wallets.Where(o => o.User!.Id == userId).FirstOrDefaultAsync();
 
             var firstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -64,8 +64,8 @@ namespace CliverApi.Controllers
             var userId = HttpContext.Items["UserId"] as string;
             var revenue = new EarningRevenue();
 
-            var userOrders = await _context.Orders.Where(o => o.CandidateId == userId).ToListAsync();
-            var buyerOrders = await _context.Orders.Where(o => o.RecruiterId == userId && o.Status != OrderStatus.Cancelled).ToListAsync();
+            var userOrders = await _context.Orders.Where(o => o.RecruiterId == userId).ToListAsync();
+            var buyerOrders = await _context.Orders.Where(o => o.CandidateId == userId && o.Status != OrderStatus.Cancelled).ToListAsync();
             var wallet = await _context.Wallets.Where(o => o.User!.Id == userId).FirstOrDefaultAsync();
 
             var firstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
