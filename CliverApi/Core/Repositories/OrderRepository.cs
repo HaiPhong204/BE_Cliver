@@ -28,7 +28,7 @@ namespace CliverApi.Core.Repositories
             }
             else
             {
-                query = query.Where(o => o.RecruiterId == userId && o.Status != OrderStatus.PendingPayment).Include(o => o.Recruiter);
+                query = query.Where(o => o.RecruiterId == userId).Include(o => o.Recruiter);
             }
 
             if (status.HasValue)
