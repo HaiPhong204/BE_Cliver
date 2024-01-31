@@ -284,7 +284,7 @@ namespace CliverApi.Core.Repositories
                     throw new ApiException("Order is invalid!", 400);
                 }
 
-                if (order.RecruiterId != userId)
+                if (order.CandidateId != userId)
                 {
                     throw new ApiException("You are not authorized to do this action!", 400);
                 }
