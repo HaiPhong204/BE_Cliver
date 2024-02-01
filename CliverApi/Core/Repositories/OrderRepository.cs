@@ -372,7 +372,7 @@ namespace CliverApi.Core.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var order = await _context.Orders.Where(o => o.Id == orderId && o.CandidateId == userId).FirstOrDefaultAsync();
+                var order = await _context.Orders.Where(o => o.Id == orderId && o.RecruiterId == userId).FirstOrDefaultAsync();
                 if (order == null)
                 {
                     throw new ApiException("Order not found", 404);
