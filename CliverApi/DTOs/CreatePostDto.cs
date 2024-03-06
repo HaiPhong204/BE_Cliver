@@ -14,7 +14,7 @@ namespace CliverApi.DTOs
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; } = string.Empty;
         [Required(ErrorMessage = "Category is required")]
-        public int SubcategoryId { get; set; }
+        public int CategoryId { get; set; }
         private List<string> _Tags { get; set; }
         public List<string> Tags
         {
