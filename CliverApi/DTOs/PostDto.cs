@@ -20,7 +20,8 @@ namespace CliverApi.DTOs
         public string UserId { get; set; } = null!;
         public PostStatus Status { get; set; }
         public UserDto? User { get; set; }
-        public Category Category { get; set; } = null!;
+        public Category Category { get; set; }
+        public int CategoryId { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
         public List<string> Images { get; set; } = new List<string>();
         public string? Video { get; set; }

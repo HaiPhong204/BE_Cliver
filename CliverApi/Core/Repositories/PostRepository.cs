@@ -34,8 +34,6 @@ namespace CliverApi.Core.Repositories
         {
             var postsQuery = Find(p => p.Status == PostStatus.Active, trackChanges: false)
             .OrderByDescending(e => e.CreatedAt)
-            .Skip(postParameters.Offset)
-            .Take(postParameters.Limit)
             .Include(e => e.User)
             .Include(p => p.Packages.OrderBy(p => p.Price)).AsQueryable();
 
@@ -88,7 +86,7 @@ namespace CliverApi.Core.Repositories
                 postsQuery = postsQuery.Where(p => p.Packages.Any(p => p.DeliveryDays <= postParameters.DeliveryTime));
             }
 
-            var posts = await postsQuery.ToListAsync();
+            var posts = await postsQuery.Skip(postParameters.Offset).Take(postParameters.Limit).ToListAsync();
             if (userId != null)
             {
                 var postIds = posts.Select(p => p.Id);

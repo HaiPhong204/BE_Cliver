@@ -4,7 +4,7 @@
     {
         const int MAX_LIMIT = 50;
         public int Offset { get; set; } = 0;
-        private int _limit = 10;
+        private int _limit = 20;
         public int Limit
         {
             get
